@@ -15,12 +15,23 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/getEmployee',async(req,res)=>{
-    const sqlInsert = "SELECT * from employee";
-    db.query(sqlInsert,(err,result)=>{
+app.get('/getEmployee', async (req, res) => {
+    const sql = "SELECT * from employee ORDER BY id DESC";
+    db.query(sql, (err, result) => {
         res.send(result)
+    })
+})
+
+app.delete('/deleteEmployee/:id', async (req, res) => {
+    const id = req.params.id;
+    const sql = "DELETE FROM employee where id = ?";
+    db.query(sql,id, (err, result) => {
+        const sql = "SELECT * from employee ORDER BY id DESC";
+        db.query(sql, (err, result) => {
+            res.send(result)
+        })
     })
 })
 
@@ -40,8 +51,11 @@ app.post('/addEmployee', async (req, res) => {
     const secondary_phone = req.body.secondary_phone;
     const secondary_relation = req.body.secondary_relation;
     const sqlInsert = "INSERT INTO employee (name,job_title,phone,email,address,city,state,primary_contact,primary_phone,primary_relation,secondary_contact,secondary_phone,secondary_relation) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    db.query(sqlInsert,[name,job_title,phone,email,address,city,state,primary_contact,primary_phone,primary_relation,secondary_contact,secondary_phone,secondary_relation],(err,result)=>{
-        console.log(result);
+    db.query(sqlInsert, [name, job_title, phone, email, address, city, state, primary_contact, primary_phone, primary_relation, secondary_contact, secondary_phone, secondary_relation], (err, result) => {
+        const sql = "SELECT * from employee ORDER BY id DESC";
+        db.query(sql, (err, result) => {
+            res.send(result)
+        })
     })
 })
 
