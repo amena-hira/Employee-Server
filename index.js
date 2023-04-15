@@ -20,10 +20,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get('/getEmployee', async (req, res) => {
     const page = parseInt(req.query.page);
     const size = parseInt(req.query.size);
-    console.log(page,size);
     const sql = 'SELECT * from employee ORDER BY id DESC LIMIT ? OFFSET ?';
-    db.query(sql,[size, page*size], (err, result) => {
-        console.log(result);
+    db.query(sql, [size, page * size], (err, result) => {
         const sql = "SELECT COUNT(*) as total_count FROM employee";
         db.query(sql, (err, count) => {
             res.send({ result, count })
@@ -39,17 +37,26 @@ app.get('/getEmployee/:id', async (req, res) => {
 })
 
 app.delete('/deleteEmployee/:id', async (req, res) => {
+    const page = parseInt(req.query.page);
+    const size = parseInt(req.query.size);
     const id = req.params.id;
     const sql = "DELETE FROM employee where id = ?";
     db.query(sql, id, (err, result) => {
-        const sql = "SELECT * from employee ORDER BY id DESC";
-        db.query(sql, (err, result) => {
-            res.send(result)
+        const sql = 'SELECT * from employee ORDER BY id DESC LIMIT ? OFFSET ?';
+        db.query(sql, [size, page * size], (err, result) => {
+            console.log(result);
+            const sql = "SELECT COUNT(*) as total_count FROM employee";
+            db.query(sql, (err, count) => {
+                res.send({ result, count })
+            })
         })
     })
 })
 
 app.put('/editEmployee/:id', async (req, res) => {
+    const page = parseInt(req.query.page);
+    const size = parseInt(req.query.size);
+    console.log(page, size);
     const id = req.params.id;
     const name = req.body.name;
     const job_title = req.body.job_title;
@@ -66,16 +73,19 @@ app.put('/editEmployee/:id', async (req, res) => {
     const secondary_relation = req.body.secondary_relation;
     const sql = "UPDATE employee SET name=?,job_title=?,phone=?,email=?,address=?,city=?,state=?,primary_contact=?,primary_phone=?,primary_relation=?,secondary_contact=?,secondary_phone=?,secondary_relation=? where id = ?";
     db.query(sql, [name, job_title, phone, email, address, city, state, primary_contact, primary_phone, primary_relation, secondary_contact, secondary_phone, secondary_relation, id], (err, result) => {
-        const sql = "SELECT * from employee ORDER BY id DESC";
-        db.query(sql, (err, result) => {
-            res.send(result)
+        const sql = 'SELECT * from employee ORDER BY id DESC LIMIT ? OFFSET ?';
+        db.query(sql, [size, page * size], (err, result) => {
+            console.log(result);
+            const sql = "SELECT COUNT(*) as total_count FROM employee";
+            db.query(sql, (err, count) => {
+                res.send({ result, count })
+            })
         })
     })
 })
 app.post('/addEmployee', async (req, res) => {
     const page = parseInt(req.query.page);
     const size = parseInt(req.query.size);
-    console.log(req.body);
     const name = req.body.name;
     const job_title = req.body.job_title;
     const phone = req.body.phone;
@@ -92,13 +102,13 @@ app.post('/addEmployee', async (req, res) => {
     const sqlInsert = "INSERT INTO employee (name,job_title,phone,email,address,city,state,primary_contact,primary_phone,primary_relation,secondary_contact,secondary_phone,secondary_relation) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
     db.query(sqlInsert, [name, job_title, phone, email, address, city, state, primary_contact, primary_phone, primary_relation, secondary_contact, secondary_phone, secondary_relation], (err, result) => {
         const sql = 'SELECT * from employee ORDER BY id DESC LIMIT ? OFFSET ?';
-    db.query(sql,[size, page*size], (err, result) => {
-        console.log(result);
-        const sql = "SELECT COUNT(*) as total_count FROM employee";
-        db.query(sql, (err, count) => {
-            res.send({ result, count })
+        db.query(sql, [size, page * size], (err, result) => {
+            console.log(result);
+            const sql = "SELECT COUNT(*) as total_count FROM employee";
+            db.query(sql, (err, count) => {
+                res.send({ result, count })
+            })
         })
-    })
     })
 })
 
