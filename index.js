@@ -5,10 +5,17 @@ const mysql = require('mysql');
 const port = process.env.port || 5000;
 
 const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "employee",
+    host: "byw8rjc2fflgntax6xhl-mysql.services.clever-cloud.com",
+    user: "uzbjuw0gi5detdlu",
+    password: "gnJGVdahbHXGGBCxsQoZ",
+    database: "byw8rjc2fflgntax6xhl",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+})
+db.getConnection((err, conn) => {
+    if(err) console.log(err)
+    console.log("Connected successfully")
 })
 
 const app = express();
